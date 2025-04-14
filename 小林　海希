@@ -1,0 +1,193 @@
+# デバッグ コンテナーをカスタマイズする方法と、Visual Studio がこの Dockerfile を使用してより高速なデバッグのためにイメージをビルドする方法については、https://aka.ms/customizecontainer をご覧ください。
+
+# このステージは、VS から高速モードで実行するときに使用されます (デバッグ構成の既定値)
+FROM mcr.microsoft.com/dotnet/runtime:8.0 AS base
+USER $APP_UID
+WORKDIR /app
+
+
+# このステージは、サービス プロジェクトのビルドに使用されます
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["ConsoleApp5.csproj", "."]
+RUN dotnet restore "./ConsoleApp5.csproj"
+COPY . .
+WORKDIR "/src/."
+RUN dotnet build "./ConsoleApp5.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+# このステージは、最終ステージにコピーするサービス プロジェクトを公開するために使用されます
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./ConsoleApp5.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+# このステージは、運用環境または VS から通常モードで実行している場合に使用されます (デバッグ構成を使用しない場合の既定)
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "ConsoleApp5.dll"]{
+  "type": "bubble",
+  "hero": {
+    "type": "image",
+    "url": "https://developers-resource.landpress.line.me/fx/img/01_1_cafe.png",
+    "size": "full",
+    "aspectRatio": "20:13",
+    "aspectMode": "cover",
+    "action": {
+      "type": "uri",
+      "uri": "https://line.me/"
+    }
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "Brown Cafe",
+        "weight": "bold",
+        "size": "xl"
+      },
+      {
+        "type": "box",
+        "layout": "baseline",
+        "margin": "md",
+        "contents": [
+          {
+            "type": "icon",
+            "size": "sm",
+            "url": "https://developers-resource.landpress.line.me/fx/img/review_gold_star_28.png"
+          },
+          {
+            "type": "icon",
+            "size": "sm",
+            "url": "https://developers-resource.landpress.line.me/fx/img/review_gold_star_28.png"
+          },
+          {
+            "type": "icon",
+            "size": "sm",
+            "url": "https://developers-resource.landpress.line.me/fx/img/review_gold_star_28.png"
+          },
+          {
+            "type": "icon",
+            "size": "sm",
+            "url": "https://developers-resource.landpress.line.me/fx/img/review_gold_star_28.png"
+          },
+          {
+            "type": "icon",
+            "size": "sm",
+            "url": "https://developers-resource.landpress.line.me/fx/img/review_gray_star_28.png"
+          },
+          {
+            "type": "text",
+            "text": "4.0",
+            "size": "sm",
+            "color": "#999999",
+            "margin": "md",
+            "flex": 0
+          }
+        ]
+      },
+      {
+        "type": "box",
+        "layout": "vertical",
+        "margin": "lg",
+        "spacing": "sm",
+        "contents": [
+          {
+            "type": "box",
+            "layout": "baseline",
+            "spacing": "sm",
+            "contents": [
+              {
+                "type": "text",
+                "text": "Place",
+                "color": "#aaaaaa",
+                "size": "sm",
+                "flex": 1
+              },
+              {
+                "type": "text",
+                "text": "Flex Tower, 7-7-4 Midori-ku, Tokyo",
+                "wrap": true,
+                "color": "#666666",
+                "size": "sm",
+                "flex": 5
+              }
+            ]
+          },
+          {
+            "type": "box",
+            "layout": "baseline",
+            "spacing": "sm",
+            "contents": [
+              {
+                "type": "text",
+                "text": "Time",
+                "color": "#aaaaaa",
+                "size": "sm",
+                "flex": 1
+              },
+              {
+                "type": "text",
+                "text": "10:00 - 23:00",
+                "wrap": true,
+                "color": "#666666",
+                "size": "sm",
+                "flex": 5
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "type": "box",
+    "layout": "vertical",
+    "spacing": "sm",
+    "contents": [
+      {
+        "type": "button",
+        "style": "link",
+        "height": "sm",
+        "action": {
+          "type": "uri",
+          "label": "CALL",
+          "uri": "https://line.me/"
+        }
+      },
+      {
+        "type": "button",
+        "style": "link",
+        "height": "sm",
+        "action": {
+          "type": "uri",
+          "label": "WEBSITE",
+          "uri": "https://line.me/"
+        }
+      },
+      {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [],
+        "margin": "sm"
+      }
+    ],
+    "flex": 0
+  }
+}<form method="post" action="<form method=" post" action="">
+    <div class="rendered-form formbuilder-embedded-bootstrap">
+        <div class="formbuilder-text form-group field-first-name"><label for="first-name" class="formbuilder-text-label">名前<span class="formbuilder-required">*</span></label><input type="text" class="form-control" name="first-name" id="first-name" required="required" aria-required="true"></div>
+        <div class="formbuilder-text form-group field-last-name"><label for="last-name" class="formbuilder-text-label">名字<span class="formbuilder-required">*</span></label><input type="text" class="form-control" name="last-name" id="last-name" required="required" aria-required="true"></div>
+        <div class="formbuilder-button form-group field-submit"><button type="submit" class="form-control btn-primary btn" name="submit" style="primary" id="submit">送信</button></div>
+    </div>
+</form>">
+<div class="rendered-form formbuilder-embedded-bootstrap">
+    <div class="formbuilder-text form-group field-first-name"><label for="first-name" class="formbuilder-text-label">名前<span class="formbuilder-required">*</span></label><input type="text" class="form-control" name="first-name" value="kobayashi" id="first-name" required="required" aria-required="true"></div>
+    <div class="formbuilder-text form-group field-last-name"><label for="last-name" class="formbuilder-text-label">名字<span class="formbuilder-required">*</span></label><input type="text" class="form-control" name="last-name" value="kaiki" id="last-name" required="required" aria-required="true"></div>
+    <div class="formbuilder-button form-group field-submit"><button type="submit" class="form-control btn-primary btn" name="submit" value="100" style="primary" id="submit">送信</button></div>
+</div>
+</form>
+formBuilder プロジェクトを利用しています。
+
